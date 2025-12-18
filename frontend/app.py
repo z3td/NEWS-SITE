@@ -5,6 +5,8 @@ import os
 import uuid
 import random
 
+IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg", ".webp")
+
 API_BASE = "http://127.0.0.1:8000"
 
 # --- UI setup ---
@@ -226,14 +228,28 @@ def page_post():
 
 def page_meme():
     st.header("Random Meme")
-    files = list(MEMES.glob("*"))
-    if not files:
+
+    # беремо тільки реальні картинки
+    images = [
+        img for img in MEMES.iterdir()
+        if img.is_file() and img.suffix.lower() in IMAGE_EXTENSIONS
+    ]
+
+    if not images:
         st.info("No memes found. Put images into frontend/memes/")
         return
-    img = random.choice(files)
-    st.image(str(img), use_container_width=True)
+
+    img = random.choice(images)
+
+    try:
+        st.image(str(img), use_container_width=True)
+    except Exception as e:
+        st.error(f"Cannot open image: {img.name}")
+        st.caption(str(e))
+
     if st.button("Next meme"):
         trigger_rerun()
+
 
 # --- render ---
 if st.session_state["page"] == "all":
