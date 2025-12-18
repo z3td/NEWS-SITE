@@ -1,0 +1,17 @@
+# venv
+venv/
+.venv/
+
+# python cache
+__pycache__/
+*.pyc
+
+# db
+news.db
+
+# streamlit
+.streamlit/
+
+# system
+.DS_Store
+Thumbs.db
