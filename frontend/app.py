@@ -89,7 +89,7 @@ def page_all():
             st.write(f"**Date:** {p.get('created_at','')}")
             st.write(f"👍 Likes: {p.get('likes',0)}")
         st.markdown("---")
-
+#Create Post
 def page_create():
     st.header("Create Post")
     first = st.text_input("First name", key="first_name")
@@ -123,13 +123,21 @@ def page_create():
             try:
                 r = requests.post(f"{API_BASE}/posts", json=payload, timeout=5)
                 r.raise_for_status()
-                st.success("Post created!")
 
-                st.session_state.pop("first_name", None)
-                st.session_state.pop("last_name", None)
-                st.session_state.pop("post_title", None)
-                st.session_state.pop("post_content", None)
-                st.session_state.pop("img_url_input", None)
+                created_post = r.json()
+                post_id = created_post.get("id")
+
+                
+                st.session_state["page"] = "post"
+                st.session_state["post_id"] = post_id
+
+            
+                for key in ["first_name", "last_name", "post_title", "post_content", "img_url_input"]:
+                    st.session_state.pop(key, None)
+
+                st.rerun()
+
+
                 st.rerun()
 
 
@@ -229,7 +237,6 @@ def page_post():
 def page_meme():
     st.header("Random Meme")
 
-    # беремо тільки реальні картинки
     images = [
         img for img in MEMES.iterdir()
         if img.is_file() and img.suffix.lower() in IMAGE_EXTENSIONS
