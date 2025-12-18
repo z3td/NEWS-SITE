@@ -111,6 +111,7 @@ pip install -r requirements.txt
 - 4. Запуск backend
 uvicorn backend.main:app --reload
 - 5. Запуск frontend (в іншому терміналі)
+cd NEWS-SITE 
 streamlit run frontend/app.py
 ``` 
 
